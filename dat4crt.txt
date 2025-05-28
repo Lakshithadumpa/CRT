@@ -1,0 +1,327 @@
+applications of tree datastructure
+
+
+1. file system
+2. databases
+3. searching and sorting
+4. networking
+5. compilers and interpreters
+6. artificial intelligence
+7. web technologies
+8. operating system
+9. expression evaluvation
+10. version control system
+
+
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class BinaryTree {
+    static class Node{
+        int val;
+        Node lt,rt;
+        public Node(int item){
+            val=item;
+            lt=rt=null;
+        }
+    }
+    Node root;
+    public BinaryTree(){
+        root=null;
+    }
+    public void insert(int val){
+        root=insertRec(root,val);
+    }
+    private Node insertRec(Node root, int val){
+        if(root==null){
+            root=new Node(val);
+            return root;
+        }
+        if(val<root.val)
+            root.lt=insertRec(root.lt,val);
+        else
+            root.rt=insertRec(root.rt,val);
+        return root;
+    }
+    public void inOrderTraversal(Node node){
+        if(node!=null){
+            inOrderTraversal(node.lt);
+            System.out.print(node.val+" ");
+            inOrderTraversal(node.rt);
+        }
+    }
+    public void preOrderTraversal(Node node){
+        if(node!=null){
+            System.out.print(node.val+" ");
+            preOrderTraversal(node.lt);
+            preOrderTraversal(node.rt);
+        }
+    }
+    public void postOrderTraversal(Node node){
+        if(node!=null){
+            postOrderTraversal(node.lt);
+            postOrderTraversal(node.rt);
+            System.out.print(node.val+" ");
+        }
+    }
+    public void levelOrderTraversal(Node node){
+        if(root==null)
+            return;
+        Queue<Node> queue=new LinkedList<>();
+        queue.add(root);
+        while(!queue.isEmpty()){
+            Node curr=queue.poll();
+            System.out.print(curr.val+" ");
+            if(curr.lt!=null)
+                queue.add(curr.lt);
+            if(curr.rt!=null)
+                queue.add(curr.rt);
+        }
+    }
+    public static void main(String[] args){
+        BinaryTree tree=new BinaryTree();
+        tree.insert(5);
+        tree.insert(3);
+        tree.insert(7);
+        tree.insert(2);
+        tree.insert(4);
+        tree.insert(6);
+        tree.insert(8);
+        System.out.println("In-order traversal:");
+        tree.inOrderTraversal(tree.root);
+        System.out.println();
+        System.out.println("Pre-order traversal:");
+        tree.preOrderTraversal(tree.root);
+        System.out.println();
+        System.out.println("Post-order traversal:");
+        tree.levelOrderTraversal(tree.root);
+        System.out.println();
+        System.out.println("Level-order traversal:");
+        tree.inOrderTraversal(tree.root);
+        System.out.println();
+    }
+}
+
+
+
+binary search tree or bst
+
+
+
+binary search tree is a most efficient tree type when left node is less than parent node and right node is  greater we can perform operationas like insertion deletion and sorting with order of login time complexity 
+
+// BST implementation
+import java.util.LinkedList;
+import java.util.Queue;
+
+class BinarySearchTree {
+    //Node class representing each node in the BST
+    static class Node {
+        int value;
+        Node left, right;
+        public Node(int item) {
+            value = item;
+            left = right = null;
+        }
+    }
+    Node root;
+    //constructor
+    public BinarySearchTree() {
+        root = null;
+    }
+    //Insert method to insert a new value in the tree
+    public void insert(int value) {
+        root = insertRec(root, value);
+    }
+    //Recursive insert helper
+    private Node insertRec(Node root, int value) {
+        if(root == null) {
+            root = new Node(value);
+            return root;
+        }
+        if(value<root.value)
+            root.left = insertRec(root.left, value);
+        else if (value > root.value)
+            root.right = insertRec(root.right, value);
+        // If value is equal, duplicates are ignored( or you can decide how to handle)
+        return root;
+    }
+    //Delete a value from the BST
+    public void delete(int value) {
+        root = deleteRec(root, value);
+    }
+    private Node deleteRec(Node root, int value) {
+        if(root == null) return root;
+        if(value < root.value)
+            root.left = deleteRec(root.left, value);
+        else if(value > root.value) 
+            root.right = deleteRec(root.right, value);
+        else {
+            //Node to be deleted ClassNotFoundException
+            //case 1 and 2: node with only one child or no child
+            if (root.left == null)
+                return root.right;
+            else if (root.right == null)
+                return root.left;
+            //case 3: node with two children:
+            //Get the inorder successor (smallest in the right subtree)
+            root.value = minValue(root.right);
+            //Delete the inorder successor
+            root.right = deleteRec (root.right, root.value);
+        }
+        return root;
+    }
+    //Helper method to find the smallest value in a BST subtree
+    private int minValue (Node root) {
+        int minVal = root.value;
+        while(root.left != null) {
+            root = root.left;
+            minVal = root.value;
+        }
+        return minVal;
+    }
+    //In-order traversal (Left, Root, Right)
+    public void inOrderTraversal(Node node) {
+        if (node!=null) {
+            inOrderTraversal(node.left);
+            System.out.print(node.value+" ");
+            inOrderTraversal(node.right);
+        }
+    }
+    //pre-order traversal(root,Left,Right)
+    public void preOrderTraversal(Node node) {
+        if(node!=null) {
+            System.out.print(node.value+" ");
+            preOrderTraversal(node.left);
+            preOrderTraversal(node.right);
+        }
+    }
+    //post-order traversal(Left,Right,Root)
+    public void postOrderTraversal(Node node) {
+        if(node!=null) {
+            postOrderTraversal(node.left);
+            postOrderTraversal(node.right);
+            System.out.print(node.value+" ");
+        }
+    }
+    //Level-order traversal(Breadth-first)
+    public void levelOrderTraversal(Node root) {
+        if (root == null)
+            return;
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+        while(!queue.isEmpty()) {
+            Node current = queue.poll();     // extract & store the element in level 0
+            System.out.print(current.value+" ");
+            if (current.left != null)
+                queue.add(current.left);
+            if (current.right != null)
+                queue.add(current.right);
+        }
+    }
+    
+    //Main method to test the tree and all traversals
+    public static void main(String[] args) {
+        BinarySearchTree bst = new BinarySearchTree();
+        // Insert nodes
+        bst.insert(5);
+        bst.insert(3);
+        bst.insert(7);
+        bst.insert(2);
+        bst.insert(4);
+        bst.insert(6);
+        bst.insert(8);
+        
+        System.out.println("In-order traversal(should be sorted): ");
+        bst.inOrderTraversal(bst.root);
+        System.out.println();
+        
+        System.out.println("pre-order traversal: ");
+        bst.preOrderTraversal(bst.root);
+        System.out.println();
+        
+        System.out.println("post-order traversal: ");
+        bst.postOrderTraversal(bst.root);
+        System.out.println();
+        
+        System.out.println("Level-order traversal: ");
+        bst.levelOrderTraversal(bst.root);
+        System.out.println();
+        
+        //Delete leaf nodes
+        System.out.println("\nDelete 20");
+        bst.delete(20);
+        System.out.println("In-order traversal after deleting 20: ");
+        bst.inOrderTraversal(bst.root);
+        System.out.println();
+        
+        //Delete a node with one child
+        System.out.println("\nDelete 30");
+        bst.delete(30);
+        System.out.println("In-order traversal after deleting 30: ");
+        bst.inOrderTraversal(bst.root);
+        System.out.println();
+        
+        //Delete a node with two children
+        System.out.println("\nDelete 50");
+        bst.delete(50);
+        System.out.println("In-order traversal after deleting 50: ");
+        bst.inOrderTraversal(bst.root);
+        System.out.println();
+        
+        
+    }
+}
+
+
+bst implementations
+
+
+
+
+avl tree
+avl tree is a self balancing binary search tree where the difference between heights of left subtree and right subtree  is atmost one   we call this as  balance factior .
+for self balalancing we use 4 types 
+LL ROTATION
+RR ROTATION
+LR ROTATION
+RL ROTATION
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
