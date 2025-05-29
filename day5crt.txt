@@ -1,0 +1,608 @@
+typesof graphs
+1.undirect graph
+2.directed graph
+3.weighted
+4.unweighted
+5.connected
+6.unconnected
+7.cyclic
+8.acyclic
+
+Types of travercell
+
+BFS
+DFS
+
+Graphs implementation 
+adjacency matrix
+
+
+
+
+the two pointers techniques uses to solve problems on arrays strings or linked list is pointers typically move each other or in same direction most sutable for sorted elements 
+   codes
+
+
+
+//AVL ThreadDeath
+class AVLTree {
+
+    // Node class for AVL Tree
+    static class Node {
+        int key, height;
+        Node left, right;
+
+        public Node(int d) {
+            key = d;
+            height = 1; // Newly inserted node is initially a leaf node
+        }
+    }
+
+    private Node root;
+
+    // Get height of a Node
+    int height(Node N) {
+        if (N == null)
+            return 0;
+        return N.height;
+    }
+
+    // Get balance factor of a Node
+    int getBalance(Node N) {
+        if (N == null)
+            return 0;
+        return height(N.left) - height(N.right);
+    }
+
+    // Right rotate subtree rooted with y
+    Node rightRotate(Node y) {
+        Node x = y.left;
+        Node T2 = x.right;
+
+        // Perform rotation
+        x.right = y;
+        y.left = T2;
+
+        // Update heights
+        y.height = Math.max(height(y.left), height(y.right)) + 1;
+        x.height = Math.max(height(x.left), height(x.right)) + 1;
+
+        // Return new root
+        return x;
+    }
+
+    // Left rotate subtree rooted with x
+    Node leftRotate(Node x) {
+        Node y = x.right;
+        Node T2 = y.left;
+
+        // Perform rotation
+        y.left = x;
+        x.right = T2;
+
+        // Update heights
+        x.height = Math.max(height(x.left), height(x.right)) + 1;
+        y.height = Math.max(height(y.left), height(y.right)) + 1;
+
+        // Return new root
+        return y;
+    }
+
+    // Insert a key into the AVL tree and balance it
+    Node insert(Node node, int key) {
+        if (node == null)
+            return new Node(key);
+
+        if (key < node.key)
+            node.left = insert(node.left, key);
+        else if (key > node.key)
+            node.right = insert(node.right, key);
+        else
+            return node; // Duplicate keys not allowed
+
+        node.height = 1 + Math.max(height(node.left), height(node.right));
+
+        int balance = getBalance(node);
+
+        // Left Left case
+        if (balance > 1 && key < node.left.key)
+            return rightRotate(node);
+
+        // Right Right case
+        if (balance < -1 && key > node.right.key)
+            return leftRotate(node);
+
+        // Left Right case
+        if (balance > 1 && key > node.left.key) {
+            node.left = leftRotate(node.left);
+            return rightRotate(node);
+        }
+
+        // Right Left case
+        if (balance < -1 && key < node.right.key) {
+            node.right = rightRotate(node.right);
+            return leftRotate(node);
+        }
+
+        return node;
+    }
+
+    // Inorder traversal to print keys
+    void inorder(Node node) {
+        if (node != null) {
+            inorder(node.left);
+            System.out.print(node.key + " ");
+            inorder(node.right);
+        }
+    }
+
+    // Main method to test the AVL tree
+    public static void main(String[] args) {
+        AVLTree tree = new AVLTree();
+
+        int[] keys = { 10, 20, 30, 40, 50, 25 };
+
+        for (int key : keys) {
+            tree.root = tree.insert(tree.root, key);
+        }
+
+        System.out.println("Inorder traversal of the constructed AVL tree:");
+        tree.inorder(tree.root);
+    }
+}
+
+
+
+
+//priority queue
+import java.util.PriorityQueue;
+import java.util.Collections;
+
+class HeapOperations {
+    public static void main(String[] args) {
+        
+        //Min HeapOperations
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+        minHeap.add(5);
+        minHeap.add(1);
+        minHeap.add(9);
+        minHeap.add(3);
+        
+        System.out.println("Min-Heap: "+minHeap);  //Output:[1,3,9,5]
+        System.out.println("Peek(Min): "+minHeap.peek()); //Output: 1
+        System.out.println("Extract(Min): "+minHeap.poll()); //Output : 1
+        System.out.println("Min-Heap after extrtact: "+minHeap);  //Output: [3,5,9]
+        
+        //Max-Heap
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+        maxHeap.add(5);
+        maxHeap.add(1);
+        maxHeap.add(9);
+        maxHeap.add(3);
+        
+        System.out.println("Max-Heap: "+maxHeap);  //Output:[9,5,3,1]
+        System.out.println("Peek(Max): "+maxHeap.peek()); //Output: 9
+        System.out.println("Extract(Max): "+maxHeap.poll()); //Output : 9
+        System.out.println("Max-Heap after extrtact: "+maxHeap);  //Output: [5,3,1]
+    }
+}
+
+
+
+
+//Graph implementation using adjacency matrix
+import java.util.LinkedList;
+import java.util.Queue;
+
+class GraphMatrix {
+    private int vertices; // number of Vertices
+    private int[][] adjacencyMatrix; //Adjacency matrix
+    
+    //Constructor to initialize the Graph
+    public GraphMatrix(int vertices) {
+        this.vertices = vertices;
+        adjacencyMatrix = new int[vertices][vertices];
+    }
+    
+    //Add edge for undirected GraphMatrix
+    public void addEdge(int src, int dest) {
+        adjacencyMatrix[src][dest] = 1; //Add edge from src to dest
+        adjacencyMatrix[dest][src] = 1; //Add edge from dest to src (undirected)
+    }
+    
+    //Display  the graph(adjacencyMatrix)
+    public void printGraph() {
+        System.out.println("Adjacency Matrix: ");
+        for(int i=0; i<vertices; i++) {
+            for(int j=0; j<vertices; j++) {
+                System.out.print(adjacencyMatrix[i][j]+" ");
+            }
+            System.out.println();
+        }
+    }
+    
+    //BFS traversal from a given source vertex
+    public void bfs(int start) {
+        boolean[] visited = new boolean[vertices];
+        Queue<Integer> queue = new LinkedList<>();
+        visited[start] = true;
+        queue.offer(start);   //offer() insert value when space is available otherwise not inserted
+        System.out.print("BFS Traversal starting from vertex " + start + ": ");
+        while(!queue.isEmpty()) {
+            int vertex = queue.poll();
+            System.out.print(vertex + " ");
+            for(int i=0; i<vertices; i++) {
+                if(adjacencyMatrix[vertex][i] == 1 && !visited[i]) {
+                    visited[i] = true;
+                    queue.offer(i);
+                }
+            }
+        }
+        System.out.println();
+    }
+    
+    //DFS traversal utility method
+    private void dfsUtil(int vertex, boolean[] visited) {
+        visited[vertex] = true;
+        System.out.print(vertex + " ");
+        
+        for(int i=0; i<vertices; i++) {
+            if(adjacencyMatrix[vertex][i] == 1 && !visited[i]) {
+                dfsUtil(i, visited);
+            }
+        }
+    }
+    
+    //DFS traversal from a given source vertex
+    public void dfs(int start) {
+        boolean[] visited = new boolean[vertices];
+        System.out.print("DFS Traversal starting from vertex" + start + ": ");
+        dfsUtil(start, visited);
+        System.out.println();
+    }
+    
+    //Main method to demonstrate the graph implementation
+    public static void main(String[] args) {
+        GraphMatrix graph = new GraphMatrix(5);
+        
+        graph.addEdge(0,1);
+        graph.addEdge(0,4);
+        graph.addEdge(1,2);
+        graph.addEdge(1,3);
+        graph.addEdge(1,4);
+        graph.addEdge(2,3);
+        graph.addEdge(3,4);
+        graph.printGraph();
+        graph.bfs(0);
+        graph.dfs(0);
+    }
+}
+
+
+
+
+//Graph implementation using adjacency list
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+class GraphList {
+    private int vertices; // number of Vertices
+    private List<List<Integer>> adjacencyList; //Adjacency matrix
+    
+    //Constructor to initialize the Graph
+    public GraphList(int vertices) {
+        this.vertices = vertices;
+        adjacencyList = new ArrayList<>();
+        for(int i=0; i<vertices; i++) {
+            adjacencyList.add(new ArrayList<>());
+            
+        }
+    }
+    
+    //Add edge for undirected GraphMatrix
+    public void addEdge(int src, int dest) {
+        adjacencyList.get(src).add(dest); //Add edge from src to dest
+        adjacencyList.get(dest).add(src); //Add edge from dest to src (undirected)
+    }
+    
+    //Display  the graph(adjacencyList)
+    public void printGraph() {
+        System.out.println("Adjacency List: ");
+        for(int i=0; i<vertices; i++) {
+            System.out.print("vertex " + i + ":");
+            for(Integer neighbour : adjacencyList.get(i)) {
+                System.out.print(" -> "+neighbour);
+            }
+            System.out.println();
+        }
+    }
+    
+    //BFS traversal from a given source vertex
+    public void bfs(int start) {
+        boolean[] visited = new boolean[vertices];
+        Queue<Integer> queue = new LinkedList<>();
+        visited[start] = true;
+        queue.offer(start);   //offer() insert value when space is available otherwise not inserted
+        System.out.print("BFS Traversal starting from vertex " + start + ": ");
+        while(!queue.isEmpty()) {
+            int vertex = queue.poll();
+            System.out.print(vertex + " ");
+            for(int i=0; i<vertices; i++) {
+                if(adjacencyList[vertices][i] == 1 && !visited[i]) {
+                    visited[i] = true;
+                    queue.offer(i);
+                }
+            }
+        }
+        System.out.println();
+    }
+    
+    //DFS traversal utility method
+    private void dfsUtil(int vertex, boolean[] visited) {
+        visited[vertex] = true;
+        System.out.print(vertex + " ");
+        
+        for(int i=0; i<vertices; i++) {
+            if(adjacencyList[vertices][i] == 1 && !visited[i]) {
+                dfsUtil(i, visited);
+            }
+        }
+    }
+    
+    //DFS traversal from a given source vertex
+    public void dfs(int start) {
+        boolean[] visited = new boolean[vertices];
+        System.out.print("DFS Traversal starting from vertex" + start + ": ");
+        dfsUtil(start, visited);
+        System.out.println();
+    }
+    
+    //Main method to demonstrate the graph implementation
+    public static void main(String[] args) {
+        GraphList graph = new GraphList(5);
+        
+        graph.addEdge(0,1);
+        graph.addEdge(0,4);
+        graph.addEdge(1,2);
+        graph.addEdge(1,3);
+        graph.addEdge(1,4);
+        graph.addEdge(2,3);
+        graph.addEdge(3,4);
+        graph.printGraph();
+        graph.bfs(0);
+        graph.dfs(0);
+    }
+}
+
+
+
+
+
+
+//connected components
+import java.util.LinkedList;
+import java.util.Queue;
+
+class GraphMatrix1 {
+    private int vertices; // number of Vertices
+    private int[][] adjacencyMatrix; //Adjacency matrix
+    
+    //Constructor to initialize the Graph
+    public GraphMatrix1(int vertices) {
+        this.vertices = vertices;
+        adjacencyMatrix = new int[vertices][vertices];
+    }
+    
+    //Add edge for undirected GraphMatrix
+    public void addEdge(int src, int dest) {
+        adjacencyMatrix[src][dest] = 1; //Add edge from src to dest
+        adjacencyMatrix[dest][src] = 1; //Add edge from dest to src (undirected)
+    }
+    
+    //Display  the graph(adjacencyMatrix)
+    public void printGraph() {
+        System.out.println("Adjacency Matrix: ");
+        for(int i=0; i<vertices; i++) {
+            for(int j=0; j<vertices; j++) {
+                System.out.print(adjacencyMatrix[i][j]+" ");
+            }
+            System.out.println();
+        }
+    }
+    
+    //BFS traversal from a given source vertex
+    public void bfs(int start, boolean[] visited) {
+        Queue<Integer> queue = new LinkedList<>();
+        visited[start] = true;
+        queue.offer(start);   //offer() insert value when space is available otherwise not inserted
+        System.out.print("BFS Traversal starting from vertex " + start + ": ");
+        while(!queue.isEmpty()) {
+            int vertex = queue.poll();
+            System.out.print(vertex + " ");
+            for(int i=0; i<vertices; i++) {
+                if(adjacencyMatrix[vertex][i] == 1 && !visited[i]) {
+                    visited[i] = true;
+                    queue.offer(i);
+                }
+            }
+        }
+        System.out.println();
+    }
+    
+    //Method to find and print all connected components
+    public void findConnectedComponents() {
+        boolean[] visited = new boolean[vertices];
+        System.out.println("Connected Components");
+        
+        for(int v=0; v<vertices;v++) {
+            if(!visited[v]) {
+                System.out.print("Component: ");
+                bfs(v,visited); //perform BFS for each unvisited vertex
+            }
+        }
+    }
+    
+    //Main method to demonstrate the graph implementation
+    public static void main(String[] args) {
+        GraphMatrix1 graph = new GraphMatrix1(8);
+        
+        graph.addEdge(0,1);
+        graph.addEdge(0,2);
+        graph.addEdge(1,2);
+        graph.addEdge(3,4);
+        graph.addEdge(5,6);
+        graph.printGraph();
+        graph.findConnectedComponents();
+    }
+}
+
+
+
+
+
+
+
+//CYCLIC DETECTION
+public class Mainprogram2{
+    private int vertices;//No.of vertices
+    private int[][] adjacencyMatrix; //adjacency matrx
+    //constructor to initialize graph
+    public Mainprogram2(int vertices){
+        this.vertices=vertices;
+        adjacencyMatrix=new int[vertices][vertices];
+    }
+    //add edge for undirected graph
+    public void addEdge(int src,int dest){
+        adjacencyMatrix[src][dest]=1;
+        adjacencyMatrix[dest][src]=1;
+    }
+    //dispaly the graph(adjacency matrix)
+    public void printGraph(){
+        System.out.println("Adjacency Matrix:");
+        for(int i=0;i<vertices;i++){
+            for(int j=0;j<vertices;j++){
+                System.out.print(adjacencyMatrix[i][j]+" ");
+            }
+            System.out.println();
+        }
+    }
+    private boolean dfsCycle(int vertex,boolean[] visited,int parent){
+        visited[vertex]=true;
+        for(int i=0;i<vertices;i++){
+            if(adjacencyMatrix[vertex][i]==1){
+                if(!visited[i]){
+                    if(dfsCycle(i,visited,vertex)){
+                        return true;
+                    }
+                    else if(i!=parent){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    public boolean hasCycle(){
+        boolean[] visited=new boolean[vertices];
+        for(int v=0;v<vertices;v++){
+            if(!visited[v]){
+                if(dfsCycle(v,visited,-1)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    public static void main(String[] args) {
+        Mainprogram2 graph=new Mainprogram2(5);
+        graph.addEdge(0,1);
+        graph.addEdge(1,2);
+        graph.addEdge(2,0);
+        graph.addEdge(3,4);
+        graph.printGraph();
+        if(graph.hasCycle()){
+            System.out.println("The graph contains a cycle");
+        }
+        else{
+            System.out.println("The graph does not contains a cycle");
+        }
+    }
+}
+
+class Solution {
+    public void reverseString(char[] s) {
+        int left=0;
+        int right=s.length-1;
+        while(left<right){
+            char temp=s[left];
+            s[left]=s[right];
+            s[right]=temp;
+            left++;
+            right--;
+        }
+    }
+}
+
+
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int left=0;
+        int right=nums.length-1;
+        while(left<right){
+            int s=nums[left]+nums[right];
+            if(s==target) return new int[] {left+1,right+1};
+            else if(s>target) right=right-1;
+            else left=left+1;
+        }
+        return new int[] {-1,-1};
+    }
+}
+
+class Solution {
+    public int maxArea(int[] height) {
+        int left=0;
+        int right=height.length-1;
+        int Max=0;
+        while(left<right){
+            int maxwater=Math.min(height[left],height[right])*(right-left);
+            Max=Math.max(Max,maxwater);
+            if(height[left]>height[right]) right--;
+            else left++;
+        }
+        return Max;
+    }
+}
+
+
+
+class Solution {
+    public int maxArea(int[] height) {
+        int left = 0;
+        int right = height.length - 1;
+        int max = 0;
+
+        while (left < right) {
+            int minHeight = Math.min(height[left], height[right]);
+            int width = right - left;
+            int currentArea = minHeight * width;
+            max = Math.max(max, currentArea);
+
+            if (height[left] < height[right]) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+
+        return max;
+    }
+
+    public static void main(String[] args) {
+        int[] height = {1, 8, 6, 5, 6, 4, 8, 7};
+        Solution solution = new Solution();
+        System.out.println("Maximum area: " + solution.maxArea(height));
+    }
+}    
+
